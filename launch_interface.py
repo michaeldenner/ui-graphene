@@ -11,7 +11,7 @@ import Applet as ap
 import Applet_Trilayer_ABA_pyqt as ap_ABA
 import Applet_Trilayer_ABB as ap_ABB
 import Applet_Trilayer_ABC as ap_ABC
-#import monolayer_ribbon_int
+
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -21,6 +21,8 @@ class MainWindow(QtWidgets.QMainWindow):
         MainWindow.setObjectName(self, "Master Project")
 
         self.show()
+        
+        # Launch interface and connect buttons
 
         self.monolayer_ribbon.clicked.connect(lambda:os.system('python monolayer_ribbon.py'))
         self.bilayer_ribbon.clicked.connect(lambda:os.system('python bilayer_ribbon.py'))

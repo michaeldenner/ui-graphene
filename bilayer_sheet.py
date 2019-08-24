@@ -15,19 +15,23 @@ class Bilayer(QtWidgets.QMainWindow):
         super(Bilayer, self).__init__()
         uic.loadUi('Interface_bilayer_sheet.ui', self)
         Bilayer.setObjectName(self, "Bilayer Sheet")
-
+        
+        
+        # List of possible stacking options
 
         list2 = ['Bilayer AA', 'Bilayer AB']
         self.SelectStack.clear()
         self.SelectStack.addItems(list2)
 
-
+        # List of possible field configurations
 
         list4 = ['In-plane y', 'In-plane x', 'In-plane angle', 'Perpendicular']
         self.SelectBBil.clear()
         self.SelectBBil.addItems(list4)
 
         self.show()
+        
+        # Connect interface buttons
 
         self.PlotSummary.clicked.connect(self.plot_summary)
         self.Phases.clicked.connect(self.phases)
@@ -39,32 +43,38 @@ class Bilayer(QtWidgets.QMainWindow):
 
 
     def plot_summary(self):
+        
+        # Generate summary plot from chosen lattice and Hamiltonian
+        
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
-        Lat = lattice('Sheet', self.SelectStack.currentText())
+        Lat = lattice('Sheet', self.SelectStack.currentText()) # Create lattice
 
-        H = Hamiltonian(Lat, self.Hoppingt2.value(), self.Hoppingtprime2.value())
-        if self.Magneticfield2.value() != 0:
+        H = Hamiltonian(Lat, self.Hoppingt2.value(), self.Hoppingtprime2.value()) # Create Hamiltonian
+        if self.Magneticfield2.value() != 0: # Add magnetic field
             H.add_magnetic_field(self.Magneticfield2.value(), self.SelectBBil.currentText(), self.BAngle.value())
-        if self.OnsiteV.value() != 0:
+        if self.OnsiteV.value() != 0: # Add layer potentials
             H.add_lattice_imbalance(self.OnsiteV.value())
-        if self.OnsiteV_2.value() != 0:
+        if self.OnsiteV_2.value() != 0: # Add sublattice potentials
             H.add_sublattice_imbalance(self.OnsiteV_2.value())
         P = Plot(H)
         P.summary(self.Nk.value(), K, 0, self.xIndex.value(), self.yIndex.value(), self.dxIndex.value(), self.dyIndex.value())
         plt.show()
 
     def dos(self):
+        
+        # Calculate density of states from chosen lattice and Hamiltonian
+        
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
-        Lat = lattice('Sheet', self.SelectStack.currentText())
+        Lat = lattice('Sheet', self.SelectStack.currentText()) # Create lattice
 
-        H = Hamiltonian(Lat, self.Hoppingt2.value(), self.Hoppingtprime2.value())
-        if self.Magneticfield2.value() != 0:
+        H = Hamiltonian(Lat, self.Hoppingt2.value(), self.Hoppingtprime2.value()) # Create Hamiltonian
+        if self.Magneticfield2.value() != 0: # Add magnetic field
             H.add_magnetic_field(self.Magneticfield2.value(), self.SelectBBil.currentText(), self.BAngle.value())
-        if self.OnsiteV.value() != 0:
+        if self.OnsiteV.value() != 0: # Add layer potentials
             H.add_lattice_imbalance(self.OnsiteV.value())
-        if self.OnsiteV_2.value() != 0:
+        if self.OnsiteV_2.value() != 0: # Add sublattice potentials
             H.add_sublattice_imbalance(self.OnsiteV_2.value())
         H.build_Hamiltonian()
 
@@ -77,24 +87,29 @@ class Bilayer(QtWidgets.QMainWindow):
 
 
     def phases(self):
+        
+        # Run phases applet
+        
         ap.run()
 
 
     def berry(self):
+        
+        # Calculate berry phase around valleys from chosen lattice and Hamiltonian
 
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
-        Lat = lattice('Sheet', self.SelectStack.currentText())
+        Lat = lattice('Sheet', self.SelectStack.currentText()) # Create lattice
 
-        H = Hamiltonian(Lat, self.Hoppingt2.value(), self.Hoppingtprime2.value())
-        if self.Magneticfield2.value() != 0:
+        H = Hamiltonian(Lat, self.Hoppingt2.value(), self.Hoppingtprime2.value()) # Create Hamiltonian
+        if self.Magneticfield2.value() != 0: # Add magnetic field
             H.add_magnetic_field(self.Magneticfield2.value(), self.SelectBBil.currentText(), self.BAngle.value())
-        if self.OnsiteV.value() != 0:
+        if self.OnsiteV.value() != 0: # Add layer potentials
             H.add_lattice_imbalance(self.OnsiteV.value())
-        if self.OnsiteV_2.value() != 0:
+        if self.OnsiteV_2.value() != 0: # Add sublattice potentials
             H.add_sublattice_imbalance(self.OnsiteV_2.value())
 
-        i = topology(H)
+                i = topology(H) # Create invariants object
 
         k1 = i.berry_curvature(np.array([-(4 * np.pi) / (3 * np.sqrt(3)), 0]))
         k2 = i.berry_curvature(np.array([(4 * np.pi) / (6 * np.sqrt(3)), (4 * np.pi) / (3 * 2)]))
@@ -116,21 +131,23 @@ class Bilayer(QtWidgets.QMainWindow):
 
 
     def chern(self):
+        
+        # Calculate chern number from chosen lattice and Hamiltonian
 
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
-        Lat = lattice('Sheet', self.SelectStack.currentText())
+        Lat = lattice('Sheet', self.SelectStack.currentText()) # Create lattice
 
-        H = Hamiltonian(Lat, self.Hoppingt2.value(), self.Hoppingtprime2.value())
-        if self.Magneticfield2.value() != 0:
+        H = Hamiltonian(Lat, self.Hoppingt2.value(), self.Hoppingtprime2.value()) # Create Hamiltonian
+        if self.Magneticfield2.value() != 0: # Add magnetic field
             H.add_magnetic_field(self.Magneticfield2.value(), self.SelectBBil.currentText(), self.BAngle.value())
-        if self.OnsiteV.value() != 0:
+        if self.OnsiteV.value() != 0: # Add layer potentials
             H.add_lattice_imbalance(self.OnsiteV.value())
-        if self.OnsiteV_2.value() != 0:
+        if self.OnsiteV_2.value() != 0: # Add sublattice potentials
             H.add_sublattice_imbalance(self.OnsiteV_2.value())
 
-        i = topology(H)
-        ch = i.chern_int(0.01)
+        i = topology(H) # Create invariants object
+        ch = i.chern_int(0.01) # Calculate chern number
         s = "{:.4f}".format(ch)
 
 
@@ -139,27 +156,28 @@ class Bilayer(QtWidgets.QMainWindow):
         msgBox.setInformativeText(s)
         msgBox.exec_()
 
-        #print("Calculating Chern number ....")
-        #print()
+
 
     def locchernK(self):
+        
+        # Calculate local chern number at K valley from chosen lattice and Hamiltonian
 
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
-        Lat = lattice('Sheet', self.SelectStack.currentText())
+        Lat = lattice('Sheet', self.SelectStack.currentText()) # Create lattice
 
-        H = Hamiltonian(Lat, self.Hoppingt2.value(), self.Hoppingtprime2.value())
-        if self.Magneticfield2.value() != 0:
+        H = Hamiltonian(Lat, self.Hoppingt2.value(), self.Hoppingtprime2.value()) # Create Hamiltonian
+        if self.Magneticfield2.value() != 0: # Add magnetic field
             H.add_magnetic_field(self.Magneticfield2.value(), self.SelectBBil.currentText(), self.BAngle.value())
-        if self.OnsiteV.value() != 0:
+        if self.OnsiteV.value() != 0: # Add layer potentials
             H.add_lattice_imbalance(self.OnsiteV.value())
-        if self.OnsiteV_2.value() != 0:
+        if self.OnsiteV_2.value() != 0: # Add sublattice potentials
             H.add_sublattice_imbalance(self.OnsiteV_2.value())
 
-        i = topology(H)
+        i = topology(H) # Create invariants object
 
-        #print("Local Chern number:", i.chern_valley('K', 0.01))
-        ch = i.chern_valley("K", 0.01)
+        
+        ch = i.chern_valley("K", 0.01) # Calculate chern number
         s = "{:.4f}".format(ch)
 
 
@@ -169,25 +187,27 @@ class Bilayer(QtWidgets.QMainWindow):
         msgBox.exec_()
 
     def locchernKprime(self):
+        
+        # Calculate local chern number at K' valley from chosen lattice and Hamiltonian
 
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
-        Lat = lattice('Sheet', self.SelectStack.currentText())
+        Lat = lattice('Sheet', self.SelectStack.currentText()) # Create lattice
 
-        H = Hamiltonian(Lat, self.Hoppingt2.value(), self.Hoppingtprime2.value())
-        if self.Magneticfield2.value() != 0:
+        H = Hamiltonian(Lat, self.Hoppingt2.value(), self.Hoppingtprime2.value()) # Create Hamiltonian
+        if self.Magneticfield2.value() != 0: # Add magnetic field
             H.add_magnetic_field(self.Magneticfield2.value(), self.SelectBBil.currentText(), self.BAngle.value())
-        if self.OnsiteV.value() != 0:
+        if self.OnsiteV.value() != 0: # Add layer potentials
             H.add_lattice_imbalance(self.OnsiteV.value())
-        if self.OnsiteV_2.value() != 0:
+        if self.OnsiteV_2.value() != 0: # Add sublattice potentials
             H.add_sublattice_imbalance(self.OnsiteV_2.value())
 
-        i = topology(H)
+        i = topology(H) # Create invariants object
 
-        ch = i.chern_valley("K'", 0.01)
+        ch = i.chern_valley("K'", 0.01) # Calculate chern number
         s = "{:.4f}".format(ch)
 
-        #print("Local Chern number:", i.chern_valley("K'", 0.01))
+        
 
         msgBox = QtWidgets.QMessageBox()
         msgBox.setText("Local Chern number:")

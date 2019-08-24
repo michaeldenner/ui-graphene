@@ -3,35 +3,7 @@ import numpy as np
 from scipy import integrate
 from numpy.linalg import eigvalsh, eigh
 
-"""
-def evaluation_points(k, r, s, phi=0, t6=0, t7=0):
-    
-    Calculate evaluation points for Berry phase
-    :param k: Number of evaluation points
-    :param r: Radius around K-point
-    :param phi: Magnetic field strength
-    :param t6: Inter-layer hopping t6
-    :param t7: Inter-layer hopping t7
-    :param s: Sign to calculate eval points around upper or lower K point
-    :return: Evaluation points
-    
 
-    eval_points = np.zeros((k, 2))
-
-    if phi == 0:
-        shift_x = 0
-    else:
-        shift_x = -phi / 2 + s * np.sqrt(((t6 * t7) / (4.5 * 4.5)) + ((phi * phi) / 4))
-
-    for n in range(0, k):
-        theta = ((2 * np.pi) / k) * n
-        ix = (150 / 0.8) * (r * np.cos(theta) + 0.4)
-        iy = (150 / 0.8) * (r * np.sin(theta) + 0.4 + shift_x)
-        eval_points[n, 0] = np.round(ix, 0)
-        eval_points[n, 1] = np.round(iy, 0)
-
-    return eval_points
-"""
 
 class topology:
     """

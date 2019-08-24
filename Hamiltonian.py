@@ -92,6 +92,8 @@ class Hamiltonian:
         """
 
         def twisted_hop(self, orb1, orb2, add_onsite = False):
+            # Add twisted hopping for tbg
+            
             rr = orb1 - orb2
             dx = orb1[0] - orb2[0]
             dy = orb1[1] - orb2[1]
@@ -111,7 +113,7 @@ class Hamiltonian:
                 t += -self.inter_layer * (dz*dz)/rr*np.exp(-8.0*(norm-3.0))
 
                 if hasattr(self, 'B'):
-                    t *= peierls(self, orb1, orb2)
+                    t *= peierls(self, orb1, orb2) # optionally add Peierls phase
             return t
 
         def vec_pot(self, v):
@@ -266,6 +268,7 @@ class Hamiltonian:
                                     h[i, j] = self.intra_layer
 
                     elif hasattr(self, 'nnn'):
+                        # If within nnn distance, add hopping
                         if (np.linalg.norm(orb1[i] - orb2[j]) < np.sqrt(3)+0.1 and np.linalg.norm(orb1[i] - orb2[j]) > np.sqrt(3)-0.1 and i != j):
                             if (i == 3 and j != 0):
                                 if hasattr(self, 'B'):

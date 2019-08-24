@@ -24,17 +24,7 @@ def path(N1, N2, N3, phi=0, t6=0, t7=0, t=1,a=1):
     for i in range(N1):
         kx.append(-((4 * np.pi) / (3 * np.sqrt(3))) * (i / (N1 - 1)))
         ky.append(shift_y * (i / (N1 - 1)))
-    """
-    # Path from K to M
-    for j in range(N2):
-        kx.append(-((4 * np.pi) / (3 * np.sqrt(3))) + (
-                    (-(np.pi * np.sqrt(3)) / 3 + ((4 * np.pi) / (3 * np.sqrt(3)))) * (j / (N2 - 1))))
-        ky.append(shift_y + ((np.pi / 3) - shift_y) * (j / (N2 - 1)))
-    # Path from M to Gamma
-    for j in range(N3):
-        kx.append(-(np.pi * np.sqrt(3)) / 3 * ((N3 - j - 1) / (N3 - 1)))
-        ky.append(np.pi / 3 * ((N3 - j - 1) / (N3 - 1)))
-    """
+
     # from K to K'
     for j in range(N2):
         kx.append(-((4 * np.pi) / (3 * np.sqrt(3))) + (
@@ -50,11 +40,13 @@ def path(N1, N2, N3, phi=0, t6=0, t7=0, t=1,a=1):
     return kx, ky
 
 def evals1(phi,theta,t7):
-    N = 150
+    N = 150 # Number of k-points
     kx = np.linspace(-np.pi, np.pi, N + 1)
     ky = np.linspace(-np.pi, np.pi, N + 1)
     KX, KY = np.meshgrid(kx, ky)
-    H.add_magnetic_field(phi, 'In-plane angle', theta)
+    H.add_magnetic_field(phi, 'In-plane angle', theta) # Add magnetic field to Hamiltonian
+    
+    # List of parameters
     a = 1
     t1 = 3
     t2 = 3
@@ -64,20 +56,21 @@ def evals1(phi,theta,t7):
     t2_tilde = 3
     t3_tilde = 3
 
-    eigenvals = H.energy(N)
+    eigenvals = H.energy(N) # get energy
 
 
-    #H = Ham.Bilayer_origin_A2_field_angle(KX, KY, N, t1, t2, t3, t1_tilde, t2_tilde, t3_tilde, t6, t7*t6, phi, theta, a, 0)
-    #eigenvals = eigvalsh(H)
+  
     return eigenvals[:, :, 2]
 
 def evals2(phi,theta,t7):
-    K = -(4 * np.pi) / (3 * np.sqrt(3))
-    N = 150
-    dkx = np.linspace(K - 0.4, K + 0.4, N + 1)  # (-0.6, 0.6, N+1)
-    dky = np.linspace(-0.4, 0.4, N + 1)  # (K-0.6, K+0.6, N+1)
+    K = -(4 * np.pi) / (3 * np.sqrt(3)) # Location of K-point
+    N = 150 # Number of k-points
+    dkx = np.linspace(K - 0.4, K + 0.4, N + 1)
+    dky = np.linspace(-0.4, 0.4, N + 1)
     DKX, DKY = np.meshgrid(dkx, dky)
-    H.add_magnetic_field(phi, 'In-plane angle', theta)
+    H.add_magnetic_field(phi, 'In-plane angle', theta) # Add magnetic field to Hamiltonian
+    
+    # List of parameters
     a = 1
     t1 = 3
     t2 = 3
@@ -88,14 +81,17 @@ def evals2(phi,theta,t7):
     t2_tilde = 3
     t3_tilde = 3
 
-    #H = Ham.Bilayer_origin_A2_field_angle(DKX, DKY, N, t1, t2, t3, t1_tilde, t2_tilde, t3_tilde, t6, t7*t6, phi, theta, a, 0)
+    
     eigenvals = H.energy(N, K - 0.4, K + 0.4, 0 - 0.4, 0 + 0.4)
     return eigenvals
 
 def eival(phi, theta, t7):
+    # Number of k-points
     N1 = 150
     N2 = 150
     N3 = 150
+    
+    # List of parameters
     a = 1
     t1 = 3
     t2 = 3
@@ -105,18 +101,17 @@ def eival(phi, theta, t7):
     t1_tilde = 3
     t2_tilde = 3
     t3_tilde = 3
-    kx, ky = path(N1, N2, N3)
+    kx, ky = path(N1, N2, N3) # k-path in 1.BZ
     eigenvals1 = []
     eigenvals2 = []
     eigenvals3 = []
     eigenvals4 = []
     eigenvals5 = []
     eigenvals6 = []
-    H.add_magnetic_field(phi, 'In-plane angle', theta)
+    H.add_magnetic_field(phi, 'In-plane angle', theta) # Add magnetic field to Hamiltonian
 
     for i in range(len(kx)):
-        eigval = eigvalsh(
-            H.get_Hamiltonian(kx[i], ky[i]))
+        eigval = eigvalsh(H.get_Hamiltonian(kx[i], ky[i])) # Get energy eigenvalues
         eigenvals1.append(eigval[0])
         eigenvals2.append(eigval[1])
         eigenvals3.append(eigval[2])
@@ -139,9 +134,9 @@ def compute_and_plot_1(ax, alpha, theta, t7):
     KX, KY = np.meshgrid(kx, ky)
 
 
-    CS1 = QuadContourSet(ax, KY, KX, evals1(alpha, theta, t7),levels=[-4,-3,-2, -1, -0.5, -0.25, 0], cmap=pyl.get_cmap('Reds'), filled=True)
+    CS1 = QuadContourSet(ax, KY, KX, evals1(alpha, theta, t7),levels=[-4,-3,-2, -1, -0.5, -0.25, 0], cmap=pyl.get_cmap('Reds'), filled=True) # Plot Fermisurface
 
-    #pyl.clabel(CS1, inline=1, fontsize=5)
+    
     ax.set_xticks([])
     ax.set_yticks([])
     ax.set_xlabel("$k_ya$", fontsize=8)
@@ -151,8 +146,7 @@ def compute_and_plot_1(ax, alpha, theta, t7):
 
     # Add the patch to the Axes
     ax.add_patch(rect)
-    #cbar = pyl.colorbar(CS1)
-    #ax.tick_params(labelsize=5)
+
 
 
 
@@ -164,7 +158,8 @@ def compute_and_plot_2(ax, alpha, theta, t7):
     KX, KY = np.meshgrid(kx, ky)
     E = evals2(alpha, theta, t7)
 
-    CS2 = QuadContourSet(ax, KY, KX, E[:, :, 2],levels=[-1, -0.5, -0.25, -0.1, -0.01, 0], cmap=pyl.get_cmap('Reds'))
+    CS2 = QuadContourSet(ax, KY, KX, E[:, :, 2],levels=[-1, -0.5, -0.25, -0.1, -0.01, 0], cmap=pyl.get_cmap('Reds'))# Plot Fermisurface
+
     pyl.clabel(CS2, inline=1, fontsize=5)
     ax.set_xlabel("$k_ya$", fontsize=8)
     ax.set_ylabel("$k_xa$", fontsize=8)
@@ -181,7 +176,7 @@ def compute_and_plot_3(ax, phi, theta, t7):
 
     axis = np.arange(0, N1 + N2 + N3, 1)
 
-
+    # Plot bandstructure
 
     ax.plot(axis, eigenvals1, color="b")
     ax.plot(axis, eigenvals2, color="y")
@@ -214,14 +209,18 @@ def compute_and_plot_4(ax, alpha, theta, t7):
 
 
 
-
+# List of parameters
 
 
 alpha = 0
 theta = 0
 t7 = 1
 
+# Get Lattice
+
 Lat = lattice('Sheet', 'Trilayer ABA')
+
+# Get Hamiltonian
 
 H = Hamiltonian(Lat, 3, 0.3)
 
@@ -250,7 +249,7 @@ def run():
     # Plot
     fig = pyl.figure(figsize=(16,9))
 
-    # pyl.title('Simplest default with labels')
+    
     ax1 = fig.add_subplot(331)
 
     compute_and_plot_1(ax1, alpha, theta, t7)

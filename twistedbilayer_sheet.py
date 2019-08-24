@@ -15,7 +15,7 @@ class TwistedBilayer(QtWidgets.QMainWindow):
         TwistedBilayer.setObjectName(self, "Twisted Bilayer Sheet")
 
 
-
+        # List of possible magnetic fields
 
 
 
@@ -24,10 +24,15 @@ class TwistedBilayer(QtWidgets.QMainWindow):
         self.SelectBBil.addItems(list4)
 
         self.show()
+        
+        # Connect buttons
 
         self.PlotSummary.clicked.connect(self.plot_summary)
 
     def plot_summary(self):
+        
+        # Generate summary plot of chosen lattice and Hamiltonian
+        
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
         Lat = lattice('Sheet', 'Twisted Bilayer', 1, self.TwistAngle.value())

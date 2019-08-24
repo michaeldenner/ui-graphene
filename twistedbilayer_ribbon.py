@@ -16,7 +16,7 @@ class TwistedBilayer(QtWidgets.QMainWindow):
 
 
 
-
+        # List of possible magnetic fields
 
 
         list4 = ['In-plane y', 'In-plane x', 'In-plane angle', 'Perpendicular']
@@ -24,11 +24,15 @@ class TwistedBilayer(QtWidgets.QMainWindow):
         self.SelectBBil.addItems(list4)
 
         self.show()
+        
+        # Connect buttons
 
         self.CalcBands.clicked.connect(self.calc_bands)
         self.EdgeStates.clicked.connect(self.calc_edge)
 
     def calc_bands(self):
+        
+        # Calculate bandstructure from chosen lattice and Hamiltonian
 
         Lat = lattice('Ribbon', 'Twisted Bilayer', self.NUnit.value(), self.TwistAngle.value())
 
@@ -43,6 +47,8 @@ class TwistedBilayer(QtWidgets.QMainWindow):
         P.show_rib()
 
     def calc_edge(self):
+        
+        # Calculate bandstructure from chosen lattice and Hamiltonian and highlight edge states
 
         Lat = lattice('Ribbon', 'Twisted Bilayer', self.NUnit.value(), self.TwistAngle.value())
 

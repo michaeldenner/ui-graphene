@@ -16,7 +16,7 @@ class Monolayer(QtWidgets.QMainWindow):
         uic.loadUi('Interface_monolayer_sheet.ui', self)
         Monolayer.setObjectName(self, "Monolayer Sheet")
 
-
+        # Connect buttons
 
 
         self.PlotSummary.clicked.connect(self.plot_summary)
@@ -30,10 +30,13 @@ class Monolayer(QtWidgets.QMainWindow):
         self.show()
 
     def plot_summary(self):
+        
+        # Generate summary plot from chosen lattice and Hamiltonian
+        
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
         if self.Haldane.value() != 0 or self.AntiHaldane.value() != 0:
-            Lat = lattice('Sheet', 'Haldane')
+            Lat = lattice('Sheet', 'Haldane') # Get correct lattice
         else:
 
             Lat = lattice('Sheet', 'Monolayer')
@@ -41,19 +44,24 @@ class Monolayer(QtWidgets.QMainWindow):
 
         if self.AntiHaldane.value() != 0:
             H = Hamiltonian(Lat, self.Hoppingt2.value(), 0, 0, self.AntiHaldane.value())
-            H.add_antiHaldane()
+            H.add_antiHaldane() # If selected, add complex hopping
         else:
-            H = Hamiltonian(Lat, self.Hoppingt2.value(), 0, 0, self.Haldane.value())
-        if self.Magneticfield2.value() != 0:
+            H = Hamiltonian(Lat, self.Hoppingt2.value(), 0, 0, self.Haldane.value()) # If selected, add complex hopping
+        if self.Magneticfield2.value() != 0: # Add magnetic field
             H.add_magnetic_field(self.Magneticfield2.value(), 'Perpendicular')
-        if self.OnsiteV2.value() != 0:
+        if self.OnsiteV2.value() != 0: # Add sublattice imbalance
             H.add_lattice_imbalance(self.OnsiteV2.value())
+        
+        # Generate summary plot
         P = Plot(H)
         P.summary(self.Nk.value(), K, 0, self.xIndex.value(), self.yIndex.value(), self.dxIndex.value(),
                   self.dyIndex.value())
         plt.show()
 
     def dos(self):
+        
+        # Calculate density of states from chosen lattice and Hamiltonian
+        
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
         if self.Haldane.value() != 0 or self.AntiHaldane.value() != 0:
@@ -83,6 +91,8 @@ class Monolayer(QtWidgets.QMainWindow):
 
 
     def berry(self):
+        
+        # Calculate Berry phase around Dirac cones
 
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
@@ -115,6 +125,8 @@ class Monolayer(QtWidgets.QMainWindow):
         msgBox.exec_()
 
     def chern(self):
+        
+        # Calculate chern number from chosen lattice and Hamiltonian
 
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
@@ -131,7 +143,7 @@ class Monolayer(QtWidgets.QMainWindow):
             H.add_lattice_imbalance(self.OnsiteV2.value())
 
         i = topology(H)
-        ch = i.chern_int(0.01)
+        ch = i.chern_int(0.01) # calculate chern number
         s = "{:.4f}".format(ch)
 
         msgBox = QtWidgets.QMessageBox()
@@ -139,10 +151,11 @@ class Monolayer(QtWidgets.QMainWindow):
         msgBox.setInformativeText(s)
         msgBox.exec_()
 
-        # print("Calculating Chern number ....")
-        # print()
+    
 
     def locchernK(self):
+        
+        # Calculate local chern number at K valley from chosen lattice and Hamiltonian
 
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
@@ -160,8 +173,8 @@ class Monolayer(QtWidgets.QMainWindow):
 
         i = topology(H)
 
-        # print("Local Chern number:", i.chern_valley('K', 0.01))
-        ch = i.chern_valley("K", 0.01)
+        
+        ch = i.chern_valley("K", 0.01) # calculate chern number
         s = "{:.4f}".format(ch)
 
         msgBox = QtWidgets.QMessageBox()
@@ -170,6 +183,8 @@ class Monolayer(QtWidgets.QMainWindow):
         msgBox.exec_()
 
     def locchernKprime(self):
+        
+        # Calculate local chern number at K' valley from chosen lattice and Hamiltonian
 
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
@@ -187,10 +202,10 @@ class Monolayer(QtWidgets.QMainWindow):
 
         i = topology(H)
 
-        ch = i.chern_valley("K'", 0.01)
+        ch = i.chern_valley("K'", 0.01) # calculate chern number
         s = "{:.4f}".format(ch)
 
-        # print("Local Chern number:", i.chern_valley("K'", 0.01))
+        
 
         msgBox = QtWidgets.QMessageBox()
         msgBox.setText("Local Chern number:")

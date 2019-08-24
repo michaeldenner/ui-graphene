@@ -18,18 +18,21 @@ class MainWindow(QtWidgets.QMainWindow):
         uic.loadUi('Interface_trilayer_sheet.ui', self)
         MainWindow.setObjectName(self, "Trilayer Sheet")
 
+        # List of possible stacking geometries
 
         list2 = ['Trilayer ABA', 'Trilayer ABB', 'Trilayer ABC']
         self.SelectStack.clear()
         self.SelectStack.addItems(list2)
 
-
+        # List of possible magnetic fields
 
         list4 = ['In-plane y', 'In-plane x', 'In-plane angle', 'Perpendicular', 'Artificial']
         self.SelectBBil.clear()
         self.SelectBBil.addItems(list4)
 
         self.show()
+        
+        # Connect buttons
 
         self.PlotSummary.clicked.connect(self.plot_summary)
         self.Phases.clicked.connect(self.phases)
@@ -41,20 +44,26 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def plot_summary(self):
+        
+        # Generate summary plot from chosen lattice and Hamiltonian
+        
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
-        Lat = lattice('Sheet', self.SelectStack.currentText())
+        Lat = lattice('Sheet', self.SelectStack.currentText()) # Create lattice
 
-        H = Hamiltonian(Lat, self.Hoppingt2.value(), self.Hoppingtprime2.value())
-        if self.Magneticfield2.value() != 0:
+        H = Hamiltonian(Lat, self.Hoppingt2.value(), self.Hoppingtprime2.value()) # Create Hamiltonian
+        if self.Magneticfield2.value() != 0: # Add magnetic field
             H.add_magnetic_field(self.Magneticfield2.value(), self.SelectBBil.currentText(), self.BAngle.value())
 
-        if self.OnsiteV_2.value() != 0:
+        if self.OnsiteV_2.value() != 0: # Add layer polarization
             H.add_sublattice_imbalance(self.OnsiteV_2.value())
         P = Plot(H)
         P.summary(self.Nk.value(), K, 0, self.xIndex.value(), self.yIndex.value(), self.dxIndex.value(), self.dyIndex.value())
 
     def dos(self):
+        
+        # calculate density of states from chosen lattice and Hamiltonian
+        
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
         Lat = lattice('Sheet', self.SelectStack.currentText())
@@ -66,6 +75,8 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.OnsiteV_2.value() != 0:
             H.add_sublattice_imbalance(self.OnsiteV_2.value())
         H.build_Hamiltonian()
+        
+        # calculate dos
 
         dos, ev = H.dos(self.numberofKop.value(), emin=-self.energy.value(), emax=self.energy.value(), kxmin=-np.pi,
                         kxmax=np.pi, kymin=-np.pi, kymax=np.pi)
@@ -76,6 +87,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def phases(self):
+        # run applets
         if self.SelectStack.currentText() == 'Trilayer ABA':
             ap_ABA.run()
 
@@ -88,7 +100,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def berry(self):
-
+        # calculate Berry phases
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
         Lat = lattice('Sheet', self.SelectStack.currentText())
@@ -121,6 +133,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def chern(self):
+        
+        # Calculate chern number
 
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
@@ -146,6 +160,8 @@ class MainWindow(QtWidgets.QMainWindow):
         #print()
 
     def locchernK(self):
+        
+        # Calculate local chern number in K valley
 
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 
@@ -171,6 +187,8 @@ class MainWindow(QtWidgets.QMainWindow):
         msgBox.exec_()
 
     def locchernKprime(self):
+        
+        # Calculate local chern number in K' valley
 
         K = -(4 * np.pi) / (3 * np.sqrt(3))
 

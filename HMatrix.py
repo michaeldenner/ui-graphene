@@ -1,7 +1,7 @@
 import numpy as np
 
 """
-This file contains the Hamiltonians to be used for numerical diagonalization
+This file contains the Hamiltonians to be used for numerical diagonalization in the applets
 """
 
 def f(kx, ky, t1, t2, t3, a=1):
